@@ -31,6 +31,10 @@ namespace WallPlacer {
       }
     }
 
+    bool tileOccupied(const int r, const int c) const {
+      return mapping[r*numCols() + c] != NO_VERTEX;
+    }
+
     bool tileSupports(const int r, const int c, const OpType tp) const {
       return dbhc::elem(tp, allSupportedOps(r, c));
     }

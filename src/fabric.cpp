@@ -7,13 +7,24 @@ using namespace std;
 namespace WallPlacer {
 
   void placeAndRoute(const Application& app, Fabric& f) {
-    int i = 0;
     for (auto node : app.nodes()) {
-      cout << "i = " << i << endl;
-      cout << "node = " << node << endl;
-      assert(f.tileSupports(1, i, app.opType(node)));
-      f.setVertexAt(1, i, node);
-      i++;
+
+      bool placed = false;
+      for (int r = 0; r < f.numRows(); r++) {
+        for (int c = 0; c < f.numCols(); c++) {
+          if (!f.tileOccupied(r, c) && f.tileSupports(r, c, app.opType(node))) {
+            cout << "Placing " << node << endl;
+            f.setVertexAt(r, c, node);
+            placed = true;
+            break;
+          }
+        }
+
+        if (placed) {
+          break;
+        }
+      }
+
     }
   }
 }

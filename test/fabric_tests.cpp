@@ -22,6 +22,7 @@ namespace WallPlacer {
       }
 
       if (!foundNode) {
+        cout << "Error: Could not find " << node << endl;
         allPlaced = false;
       }
     }
