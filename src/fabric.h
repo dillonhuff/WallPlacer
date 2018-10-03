@@ -72,6 +72,20 @@ namespace WallPlacer {
       }
     }
 
+    bool canRouteThrough(const GridPosition pos) {
+      VertexId id = vertexAt(pos.first, pos.second);
+      if (id != NO_VERTEX) {
+        return false;
+      }
+
+      VertexId routed = vertexRoutedAt(pos.first, pos.second);
+      if (routed != NO_VERTEX) {
+        return false;
+      }
+
+      return true;
+    }
+
     bool routedAt(const GridPosition sourcePosition,
                   const GridPosition location) const {
       VertexId id = vertexAt(sourcePosition.first, sourcePosition.second);
@@ -83,6 +97,10 @@ namespace WallPlacer {
         return true;
       }
 
+      if (vertexRoutedAt(sourcePosition.first, sourcePosition.second) == id) {
+        return true;
+      }
+      
       return false;
     }
 
@@ -238,6 +256,8 @@ namespace WallPlacer {
       auto v = nextVert;
       allNodes.push_back(v);
       opTypes[v] = tp;
+      outEdges[v] = {};
+      inEdges[v] = {};      
       nextVert++;
       return v;
     }
