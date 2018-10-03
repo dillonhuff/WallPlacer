@@ -2,3 +2,6 @@
 all-tests
 *.a
 *.cmake
+Makefile
+CMakeFiles/
+CMakeCache.txt
