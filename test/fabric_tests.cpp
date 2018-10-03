@@ -108,6 +108,8 @@ namespace WallPlacer {
       placeAndRoute(app, f);
 
       REQUIRE(allPlaced(app, f));
+
+      //REQUIRE();
     }
   }
 
