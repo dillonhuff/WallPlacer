@@ -15,7 +15,7 @@ namespace WallPlacer {
       for (int r = 0; r < f.numRows(); r++) {
         for (int c = 0; c < f.numCols(); c++) {
           if (!f.tileOccupied(r, c) && f.tileSupports(r, c, app.opType(node))) {
-            cout << "Placing " << node << endl;
+            //cout << "Placing " << node << endl;
             f.setVertexAt(r, c, node);
             placed = true;
             break;
