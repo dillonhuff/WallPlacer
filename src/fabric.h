@@ -31,6 +31,10 @@ namespace WallPlacer {
       }
     }
 
+    bool tileSupports(const int r, const int c, const OpType tp) const {
+      return dbhc::elem(tp, allSupportedOps(r, c));
+    }
+
     const std::set<OpType>& allSupportedOps(const int row, const int column) const {
       return supportedOps[row*numCols() + column];
     }
@@ -55,6 +59,7 @@ namespace WallPlacer {
   class Application {
     VertexId nextVert;
 
+    std::map<VertexId, OpType> opTypes;
     std::vector<VertexId> allNodes;
 
   public:
@@ -63,9 +68,14 @@ namespace WallPlacer {
 
     const std::vector<VertexId>& nodes() const { return allNodes; }
 
+    OpType opType(const VertexId node) const {
+      return dbhc::map_find(node, opTypes);
+    }
+
     VertexId addNode(const OpType tp) {
       auto v = nextVert;
       allNodes.push_back(v);
+      opTypes[v] = tp;
       nextVert++;
       return v;
     }
