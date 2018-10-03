@@ -31,6 +31,10 @@ namespace WallPlacer {
       }
     }
 
+    const std::set<OpType>& allSupportedOps(const int row, const int column) const {
+      return supportedOps[row*numCols() + column];
+    }
+
     int numRows() const { return nRows; }
     int numCols() const { return nCols; }
 

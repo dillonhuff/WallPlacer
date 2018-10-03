@@ -84,6 +84,10 @@ namespace WallPlacer {
         }
       }
 
+      REQUIRE(f.allSupportedOps(0, 0).size() == 0);
+      REQUIRE(f.allSupportedOps(0, 1).size() == 2);
+      REQUIRE(f.allSupportedOps(3, 2).size() == 1);      
+
       Application app;
       auto in0 = app.addNode(load);
       auto c0 = app.addNode(compute);
@@ -95,6 +99,8 @@ namespace WallPlacer {
       app.addEdge(in0, c1);
       app.addEdge(c0, out0);
       app.addEdge(c1, out1);
+
+      placeAndRoute(app, f);
     }
   }
 
