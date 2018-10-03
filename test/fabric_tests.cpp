@@ -75,7 +75,8 @@ namespace WallPlacer {
     for (auto edge : app.edges()) {
 
       bool isR = isRouted(edge, app, f);
-      cout << "Edge " << edge << " is routed ? " << isR << endl;
+      auto verts = app.getEdgeVertexes(edge);
+      cout << "Edge " << edge << " = " << verts.first << ", " << verts.second << " is routed ? " << isR << endl;
       if (!isR) {
         return false;
       }
@@ -191,6 +192,10 @@ namespace WallPlacer {
       placeAndRoute(app, f);
 
       REQUIRE(allPlaced(app, f));
+
+      f.print(cout);
+
+      REQUIRE(allRouted(app, f));
     }
   }
 
