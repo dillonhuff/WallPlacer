@@ -8,6 +8,51 @@ using namespace std;
 
 namespace WallPlacer {
 
+  // Is application needed here?
+  std::vector<GridPosition>
+  followRouteTo(const GridPosition startPos,
+                const GridPosition endPos,
+                const Application& app,
+                const Fabric& f) {
+    if (equal(startPos, endPos)) {
+      return {startPos, endPos};
+    }
+
+    vector<GridPos> route{startPos};
+    return route;
+  }
+
+  // How should I represent routing? A separate field of the same length as
+  // the mapping? How do I detect an edge that is already there?
+  bool isRouted(const EdgeId edge, const Application& app, const Fabric& f) {
+    auto verts = app.getEdgeVertexes(edge);
+    GridPos startPos = f.findVertex(verts.first);
+    GridPos endPos = f.findVertex(verts.second);
+
+    assert(notEmpty(startPos));
+    assert(notEmpty(endPos));
+u
+    vector<GridPos> route = followRouteTo(startPos, endPos, app, f);
+
+    // Route should include start and end
+    if (route.size() < 2) {
+      return false;
+    }
+    return true;
+  }
+
+  bool allRouted(const Application& app, const Fabric& f) {
+    for (auto edge : app.edges()) {
+
+      bool isR = 
+      if (!
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   bool allPlaced(const Application& app, const Fabric& f) {
     bool allPlaced = true;
     for (auto node : app.nodes()) {
@@ -57,7 +102,13 @@ namespace WallPlacer {
 
       placeAndRoute(app, f);
 
-      REQUIRE(allPlaced(app, f));
+      SECTION("Every node is placed") {
+        REQUIRE(allPlaced(app, f));
+      }
+
+      SECTION("Every edge is routed") {
+        REQUIRE(allRouted(app, f));
+      }
     }
 
     SECTION("4 x 4 fabric with ios on edges") {
@@ -107,11 +158,10 @@ namespace WallPlacer {
 
       placeAndRoute(app, f);
 
-      REQUIRE(allPlaced(app, f));
-
       f.print(cout);
 
-      //REQUIRE();
+      
+      REQUIRE(allPlaced(app, f));
     }
   }
 
