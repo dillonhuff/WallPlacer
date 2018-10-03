@@ -6,6 +6,8 @@ using namespace std;
 
 namespace WallPlacer {
 
+  // TODO: Add restrictions on where you can route, cant
+  // route through the IOs
   void placeAndRoute(const Application& app, Fabric& f) {
     for (auto node : app.nodes()) {
 
