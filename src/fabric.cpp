@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+using namespace dbhc;
 using namespace std;
 
 namespace WallPlacer {
@@ -25,12 +26,42 @@ namespace WallPlacer {
           
           f.setVertexAt(r, c, toPlace);
 
-          info.unplaced.erase(toPlace);
-          bool placedRest = pnrRecursive(app, f, info);
-          if (placedRest) {
-            return true;
-          } else {
-            info.unplaced.insert(toPlace);
+          bool routed = true;
+          // Try to route to all already placed recievers of this node
+          for (auto receiverId : app.receivers(toPlace)) {
+            if (!elem(receiverId, info.unplaced)) {
+              auto receiver = f.findVertex(receiverId);
+              bool canRoute = routeFrom(toPlace, toPlace, receiver, app, f, {});
+              if (!canRoute) {
+                routed = false;
+                break;
+              }
+            }
+          }
+
+          // Try to route from all already placed sources of this node
+          for (auto sourceId : app.sources(toPlace)) {
+            if (!elem(sourceId, info.unplaced)) {
+              auto source = f.findVertex(sourceId);              
+              bool canRoute = routeFrom(source, source, toPlace, app, f, {});
+              if (!canRoute) {
+                routed = false;
+                break;
+              }
+            }
+          }
+
+          if (routed) {
+            info.unplaced.erase(toPlace);
+            bool placedRest = pnrRecursive(app, f, info);
+            if (placedRest) {
+              return true;
+            } else {
+              // Undo modifications to search state and continue
+              f.setVertexAt(r, c, NO_VERTEX);
+              f.clearRouting(toPlace);
+              info.unplaced.insert(toPlace);
+            }
           }
         }
       }

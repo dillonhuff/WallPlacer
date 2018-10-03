@@ -55,16 +55,19 @@ namespace WallPlacer {
     int nCols;
 
     std::vector<VertexId> mapping;
+    std::vector<VertexId> routeMapping;    
     std::vector<std::set<OpType> > supportedOps;
     
   public:
     Fabric(const int nRows_, const int nCols_) : nRows(nRows_), nCols(nCols_) {
       mapping.resize(numRows()*numCols());
+      routeMapping.resize(numRows()*numCols());      
       supportedOps.resize(numRows()*numCols());
 
       for (int r = 0; r < numRows(); r++) {
         for (int c = 0; c < numCols(); c++) {
           setVertexAt(r, c, NO_VERTEX);
+          routeVertexAt(r, c, NO_VERTEX);
         }
       }
     }
@@ -127,6 +130,9 @@ namespace WallPlacer {
       return neighbors;
     }
 
+    void clearRouting(const VertexId v) {
+    }
+
     GridPosition findVertex(const VertexId v) const {
       for (int r = 0; r < numRows(); r++) {
         for (int c = 0; c < numCols(); c++) {
@@ -176,6 +182,10 @@ namespace WallPlacer {
     void setVertexAt(const int row, const int column, VertexId vert) {
       mapping[row*numCols() + column] = vert;
     }
+
+    void routeVertexAt(const int row, const int column, VertexId vert) {
+      routeMapping[row*numCols() + column] = vert;
+    }
     
     void addOpToTile(const int row, const int column, const OpType op) {
       supportedOps[row*numCols() + column].insert(op);
@@ -223,6 +233,14 @@ namespace WallPlacer {
       dbhc::map_insert(inEdges, b, a);      
     }
 
+    std::vector<VertexId> receivers(const VertexId a) const {
+      return dbhc::map_find(a, outEdges);
+    }
+
+    std::vector<VertexId> sources(const VertexId a) const {
+      return dbhc::map_find(a, inEdges);
+    }
+    
     std::pair<VertexId, VertexId> getEdgeVertexes(const EdgeId edge) const {
       return dbhc::map_find(edge, edgeMap);
     }
