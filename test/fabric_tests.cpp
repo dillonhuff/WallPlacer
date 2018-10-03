@@ -83,7 +83,18 @@ namespace WallPlacer {
           f.addOpToTile(r, c, compute);
         }
       }
-      
+
+      Application app;
+      auto in0 = app.addNode(load);
+      auto c0 = app.addNode(compute);
+      auto c1 = app.addNode(compute);
+      auto out0 = app.addNode(store);
+      auto out1 = app.addNode(store);
+
+      app.addEdge(in0, c0);
+      app.addEdge(in0, c1);
+      app.addEdge(c0, out0);
+      app.addEdge(c1, out1);
     }
   }
 

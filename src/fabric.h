@@ -2,7 +2,8 @@
 
 #include <cassert>
 #include <cstdint>
-#include <vector>
+
+#include "algorithm.h"
 
 #define NO_VERTEX 0
 
@@ -16,10 +17,12 @@ namespace WallPlacer {
     int nCols;
 
     std::vector<VertexId> mapping;
+    std::vector<std::set<OpType> > supportedOps;
     
   public:
     Fabric(const int nRows_, const int nCols_) : nRows(nRows_), nCols(nCols_) {
       mapping.resize(numRows()*numCols());
+      supportedOps.resize(numRows()*numCols());
 
       for (int r = 0; r < numRows(); r++) {
         for (int c = 0; c < numCols(); c++) {
@@ -40,6 +43,8 @@ namespace WallPlacer {
     }
     
     void addOpToTile(const int row, const int column, const OpType op) {
+      supportedOps[row*numCols() + column].insert(op);
+      assert(dbhc::elem(op, supportedOps[row*numCols() + column]));
     }
   };
 
