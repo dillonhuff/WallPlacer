@@ -130,7 +130,21 @@ namespace WallPlacer {
       return neighbors;
     }
 
+    template<typename F>
+    void forAllTiles(F f) {
+      for (int r = 0; r < numRows(); r++) {
+        for (int c = 0; c < numCols(); c++) {
+          f(GridPosition{r, c});
+        }
+      }
+    }
+
     void clearRouting(const VertexId v) {
+      forAllTiles([this, v](GridPosition p){
+          if (this->vertexRoutedAt(p.first, p.second) == v) {
+            this->routeVertexAt(p.first, p.second, NO_VERTEX);
+          }
+        });
     }
 
     GridPosition findVertex(const VertexId v) const {
@@ -179,6 +193,10 @@ namespace WallPlacer {
       return mapping[row*numCols() + column];
     }
 
+    VertexId vertexRoutedAt(const int row, const int column) const {
+      return routeMapping[row*numCols() + column];
+    }
+    
     void setVertexAt(const int row, const int column, VertexId vert) {
       mapping[row*numCols() + column] = vert;
     }
