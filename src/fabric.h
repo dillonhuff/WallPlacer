@@ -31,6 +31,21 @@ namespace WallPlacer {
       }
     }
 
+    void print(std::ostream& out) {
+      for (int r = 0; r < numRows(); r++) {
+        
+        for (int c = 0; c < numCols(); c++) {
+          if (tileOccupied(r, c)) {
+            out << vertexAt(r, c) << " ";
+          } else {
+            out << "X ";
+          }
+        }
+
+        out << std::endl;
+      }
+    }
+
     bool tileOccupied(const int r, const int c) const {
       return mapping[r*numCols() + c] != NO_VERTEX;
     }

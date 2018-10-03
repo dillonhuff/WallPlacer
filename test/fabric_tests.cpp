@@ -109,6 +109,8 @@ namespace WallPlacer {
 
       REQUIRE(allPlaced(app, f));
 
+      f.print(cout);
+
       //REQUIRE();
     }
   }
