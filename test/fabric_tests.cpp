@@ -5,23 +5,50 @@
 #include "fabric.h"
 
 using namespace std;
+using namespace dbhc;
 
 namespace WallPlacer {
 
   // Is application needed here?
   std::vector<GridPosition>
+  followRouteTo(const GridPosition sourcePos,
+                const GridPosition currentPos,
+                const GridPosition endPos,
+                const Fabric& f,
+                std::set<GridPosition>& alreadyChecked) {
+    alreadyChecked.insert(currentPos);
+
+    if (equal(currentPos, endPos)) {
+      return {endPos};
+    }
+
+    if (!f.routedAt(sourcePos, currentPos)) {
+      return {};
+    }
+
+    vector<GridPos> route{currentPos};
+    for (auto nextTile : f.compassNeighbors(currentPos)) {
+      if (!elem(nextTile, alreadyChecked)) {
+        auto possibleRoute =
+          followRouteTo(sourcePos, nextTile, endPos, f, alreadyChecked);
+        if (possibleRoute.size() > 0) {
+          return possibleRoute;
+        }
+      }
+    }
+    
+    return {};
+  }
+
+  std::vector<GridPosition>
   followRouteTo(const GridPosition startPos,
                 const GridPosition endPos,
                 const Application& app,
                 const Fabric& f) {
-    if (equal(startPos, endPos)) {
-      return {startPos, endPos};
-    }
-
-    vector<GridPos> route{startPos};
-    return route;
+    std::set<GridPosition> visited;
+    return followRouteTo(startPos, startPos, endPos, f, visited);
   }
-
+  
   // How should I represent routing? A separate field of the same length as
   // the mapping? How do I detect an edge that is already there?
   bool isRouted(const EdgeId edge, const Application& app, const Fabric& f) {
@@ -31,11 +58,11 @@ namespace WallPlacer {
 
     assert(notEmpty(startPos));
     assert(notEmpty(endPos));
-u
+
     vector<GridPos> route = followRouteTo(startPos, endPos, app, f);
 
     // Route should include start and end
-    if (route.size() < 2) {
+    if (route.size() == 0) {
       return false;
     }
     return true;
@@ -44,8 +71,9 @@ u
   bool allRouted(const Application& app, const Fabric& f) {
     for (auto edge : app.edges()) {
 
-      bool isR = 
-      if (!
+      bool isR = isRouted(edge, app, f);
+      cout << "Edge " << edge << " is routed ? " << isR << endl;
+      if (!isR) {
         return false;
       }
     }
@@ -107,6 +135,7 @@ u
       }
 
       SECTION("Every edge is routed") {
+        f.print(cout);
         REQUIRE(allRouted(app, f));
       }
     }
@@ -158,9 +187,6 @@ u
 
       placeAndRoute(app, f);
 
-      f.print(cout);
-
-      
       REQUIRE(allPlaced(app, f));
     }
   }

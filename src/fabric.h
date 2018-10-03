@@ -12,13 +12,39 @@ namespace WallPlacer {
   typedef int OpType;
   typedef uint64_t VertexId;
   typedef uint64_t EdgeId;
-  typedef std::pair<int, int> GridPosition;
+
+  class GridPosition {
+  public:
+    int first;
+    int second;
+  };
+
   typedef GridPosition GridPos;
 
   static inline bool notEmpty(const GridPosition p) {
     return (p.first != -1) && (p.second != -1);
   }
 
+  static inline bool equal(const GridPosition x, const GridPosition y) {
+    return (x.first == y.first) && (x.second == y.second);
+  }
+
+  static inline bool operator==(const GridPosition x, const GridPosition y) {
+    return equal(x, y);
+  }
+
+  static inline bool operator<(const GridPosition x, const GridPosition y) {
+    if (x.first < y.first) {
+      return true;
+    }
+
+    if (x.first == y.first) {
+      return x.second < y.second;
+    }
+
+    return false;
+  }
+  
   class Fabric {
     int nRows;
     int nCols;
@@ -36,6 +62,54 @@ namespace WallPlacer {
           setVertexAt(r, c, NO_VERTEX);
         }
       }
+    }
+
+    bool routedAt(const GridPosition sourcePosition,
+                  const GridPosition location) const {
+      VertexId id = vertexAt(sourcePosition.first, sourcePosition.second);
+      if (id == NO_VERTEX) {
+        return false;
+      }
+
+      return false;
+    }
+
+    bool isInBounds(const int r, const int c) const {
+      if (r < 0 || c < 0) {
+        return false;
+      }
+
+      if (r >= numRows()) {
+        return false;
+      }
+
+      if (c >= numCols()) {
+        return false;
+      }
+
+      return true;
+    }
+
+    std::vector<GridPosition> compassNeighbors(const GridPosition p) const {
+      int r = p.first;
+      int c = p.second;
+
+      assert(0 <= r);
+      assert(r < numRows());      
+
+      assert(0 <= c);
+      assert(c < numCols());
+
+      std::vector<GridPosition> neighbors;
+      for (int i = -1; i < 2; i += 2) {
+        for (int j = -1; j < 2; j += 2) {
+          GridPosition neighbor{r + i, c + i};
+          if (isInBounds(neighbor.first, neighbor.second)) {
+            neighbors.push_back(neighbor);
+          }
+        }
+      }
+      return neighbors;
     }
 
     GridPosition findVertex(const VertexId v) const {
