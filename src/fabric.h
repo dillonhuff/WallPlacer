@@ -46,12 +46,17 @@ namespace WallPlacer {
   class Application {
     VertexId nextVert;
 
+    std::vector<VertexId> allNodes;
+
   public:
 
     Application() : nextVert(1) {}
 
+    const std::vector<VertexId>& nodes() const { return allNodes; }
+
     VertexId addNode(const OpType tp) {
       auto v = nextVert;
+      allNodes.push_back(v);
       nextVert++;
       return v;
     }

@@ -34,12 +34,13 @@ namespace WallPlacer {
 
       placeAndRoute(app, f);
 
-      bool allPlaced = false;
+      bool allPlaced = true;
       vector<VertexId> nodes= {a, b};
       for (auto node : nodes) {
         bool foundNode = false;
         for (int r = 0; r < f.numRows(); r++) {
           for (int c = 0; c < f.numCols(); c++) {
+            cout << "Vertex at " << r << ", " << c << " = " << f.vertexAt(r, c) << endl;
             if (f.vertexAt(r, c) == node) {
               foundNode = true;
               break;
