@@ -132,7 +132,8 @@ namespace WallPlacer {
 
       app.addEdge(a, b);
 
-      placeAndRoute(app, f);
+      bool res = placeAndRoute(app, f);
+      REQUIRE(res);
 
       SECTION("Every node is placed") {
         REQUIRE(allPlaced(app, f));
@@ -189,7 +190,8 @@ namespace WallPlacer {
       app.addEdge(c0, out0);
       app.addEdge(c1, out1);
 
-      placeAndRoute(app, f);
+      bool res = placeAndRoute(app, f);
+      REQUIRE(res);
 
       REQUIRE(allPlaced(app, f));
 

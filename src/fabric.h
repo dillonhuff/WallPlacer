@@ -228,5 +228,5 @@ namespace WallPlacer {
     }
   };
 
-  void placeAndRoute(const Application& app, Fabric& f);
+  bool placeAndRoute(const Application& app, Fabric& f);
 }
