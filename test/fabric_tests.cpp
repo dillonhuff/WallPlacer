@@ -18,7 +18,9 @@ namespace WallPlacer {
                 std::set<GridPosition>& alreadyChecked) {
     alreadyChecked.insert(currentPos);
 
-    if (equal(currentPos, endPos)) {
+    cout << "Following from " << currentPos << " to " << endPos << endl;
+
+    if (currentPos == endPos) {
       return {endPos};
     }
 
@@ -28,6 +30,7 @@ namespace WallPlacer {
 
     vector<GridPos> route{currentPos};
     for (auto nextTile : f.compassNeighbors(currentPos)) {
+      cout << "Next tile is " << nextTile << endl;
       if (!elem(nextTile, alreadyChecked)) {
         auto possibleRoute =
           followRouteTo(sourcePos, nextTile, endPos, f, alreadyChecked);

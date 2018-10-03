@@ -25,6 +25,11 @@ namespace WallPlacer {
     return (p.first != -1) && (p.second != -1);
   }
 
+  static inline std::ostream& operator<<(std::ostream& out, const GridPosition p) {
+    out << "(" << p.first << ", " << p.second << ")";
+    return out;
+  }
+
   static inline bool equal(const GridPosition x, const GridPosition y) {
     return (x.first == y.first) && (x.second == y.second);
   }
@@ -71,6 +76,10 @@ namespace WallPlacer {
         return false;
       }
 
+      if (sourcePosition == location) {
+        return true;
+      }
+
       return false;
     }
 
@@ -102,13 +111,19 @@ namespace WallPlacer {
 
       std::vector<GridPosition> neighbors;
       for (int i = -1; i < 2; i += 2) {
-        for (int j = -1; j < 2; j += 2) {
-          GridPosition neighbor{r + i, c + i};
-          if (isInBounds(neighbor.first, neighbor.second)) {
-            neighbors.push_back(neighbor);
-          }
+        GridPosition neighbor{r + i, c};
+        if (isInBounds(neighbor.first, neighbor.second)) {
+          neighbors.push_back(neighbor);
         }
       }
+
+      for (int i = -1; i < 2; i += 2) {
+        GridPosition neighbor{r, c + i};
+        if (isInBounds(neighbor.first, neighbor.second)) {
+          neighbors.push_back(neighbor);
+        }
+      }
+
       return neighbors;
     }
 
