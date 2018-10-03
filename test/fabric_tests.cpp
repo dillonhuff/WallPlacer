@@ -20,10 +20,39 @@ namespace WallPlacer {
       OpType op = 0;
 
       Fabric f(2, 2);
+      for (int r = 0; r < f.numRows(); r++) {
+        for (int c = 0; c < f.numCols(); c++) {
+          f.addOpToTile(r, c, op);
+        }
+      }
 
       Application app;
       auto a = app.addNode(op);
       auto b = app.addNode(op);
+
+      app.addEdge(a, b);
+
+      placeAndRoute(app, f);
+
+      bool allPlaced = false;
+      vector<VertexId> nodes= {a, b};
+      for (auto node : nodes) {
+        bool foundNode = false;
+        for (int r = 0; r < f.numRows(); r++) {
+          for (int c = 0; c < f.numCols(); c++) {
+            if (f.vertexAt(r, c) == node) {
+              foundNode = true;
+              break;
+            }
+          }
+        }
+
+        if (!foundNode) {
+          allPlaced = false;
+        }
+      }
+
+      REQUIRE(allPlaced);
     }
   }
 
