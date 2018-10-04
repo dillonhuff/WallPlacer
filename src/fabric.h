@@ -55,24 +55,31 @@ namespace WallPlacer {
     int nCols;
 
     std::vector<VertexId> mapping;
-    std::vector<VertexId> routeMapping;    
+    std::vector<VertexId> routeMapping;
+    std::vector<bool> routableTiles;    
     std::vector<std::set<OpType> > supportedOps;
     
   public:
     Fabric(const int nRows_, const int nCols_) : nRows(nRows_), nCols(nCols_) {
       mapping.resize(numRows()*numCols());
-      routeMapping.resize(numRows()*numCols());      
+      routeMapping.resize(numRows()*numCols());
+      routableTiles.resize(numRows()*numCols());
       supportedOps.resize(numRows()*numCols());
 
       for (int r = 0; r < numRows(); r++) {
         for (int c = 0; c < numCols(); c++) {
           setVertexAt(r, c, NO_VERTEX);
           routeVertexAt(r, c, NO_VERTEX);
+          setUnRoutable(r, c);
         }
       }
     }
 
     bool canRouteThrough(const GridPosition pos) {
+      if (!isRoutable(pos.first, pos.second)) {
+        return false;
+      }
+
       VertexId id = vertexAt(pos.first, pos.second);
       if (id != NO_VERTEX) {
         return false;
@@ -182,7 +189,11 @@ namespace WallPlacer {
         
         for (int c = 0; c < numCols(); c++) {
           if (tileOccupied(r, c)) {
-            out << vertexAt(r, c) << " ";
+            if (vertexAt(r, c) != NO_VERTEX) {
+              out << vertexAt(r, c) << " ";
+            } else {
+              out << "R ";
+            }
           } else {
             out << "X ";
           }
@@ -193,11 +204,25 @@ namespace WallPlacer {
     }
 
     bool tileOccupied(const int r, const int c) const {
-      return mapping[r*numCols() + c] != NO_VERTEX;
+      return (mapping[r*numCols() + c] != NO_VERTEX) || 
+        (routeMapping[r*numCols() + c] != NO_VERTEX);
     }
 
+    
     bool tileSupports(const int r, const int c, const OpType tp) const {
       return dbhc::elem(tp, allSupportedOps(r, c));
+    }
+
+    void setUnRoutable(const int row, const int column) {
+      routableTiles[row*numCols() + column] = false;
+    }
+
+    bool isRoutable(const int row, const int column) {
+      return routableTiles[row*numCols() + column];
+    }
+    
+    void setRoutable(const int row, const int column) {
+      routableTiles[row*numCols() + column] = true;
     }
 
     const std::set<OpType>& allSupportedOps(const int row, const int column) const {

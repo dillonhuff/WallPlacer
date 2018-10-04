@@ -12,6 +12,9 @@ namespace WallPlacer {
     std::set<VertexId> unplaced;
   };
 
+  // Note: Need to support shortest path routing as well as
+  // excluding some tiles from routability
+  // TODO: Exploit already placed routing tiles in search
   std::vector<GridPosition>
   routeFrom(const VertexId sourceVertex,
             const GridPosition currentPos,
@@ -28,6 +31,7 @@ namespace WallPlacer {
       return {endPos};
     }
 
+    vector<pair<GridPos, vector<GridPos> > > possibleRoutes;
     vector<GridPos> route{currentPos};
     for (auto nextTile : f.compassNeighbors(currentPos)) {
       cout << "Next tile is " << nextTile << endl;
@@ -36,7 +40,7 @@ namespace WallPlacer {
         f.routeVertexAt(nextTile.first, nextTile.second, sourceVertex);
         return {nextTile, endPos};
       }
-        
+
       if (!elem(nextTile, alreadyChecked) && f.canRouteThrough(nextTile)) {
 
         f.routeVertexAt(nextTile.first, nextTile.second, sourceVertex);

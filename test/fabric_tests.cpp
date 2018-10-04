@@ -123,6 +123,7 @@ namespace WallPlacer {
       for (int r = 0; r < f.numRows(); r++) {
         for (int c = 0; c < f.numCols(); c++) {
           f.addOpToTile(r, c, op);
+          f.setRoutable(r, c);
         }
       }
 
@@ -171,6 +172,7 @@ namespace WallPlacer {
       for (int r = 1; r < f.numRows() - 1; r++) {
         for (int c = 1; c < f.numCols() - 1; c++) {
           f.addOpToTile(r, c, compute);
+          f.setRoutable(r, c);          
         }
       }
 
