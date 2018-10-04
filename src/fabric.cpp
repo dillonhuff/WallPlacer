@@ -31,11 +31,14 @@ namespace WallPlacer {
     vector<GridPos> route{currentPos};
     for (auto nextTile : f.compassNeighbors(currentPos)) {
       cout << "Next tile is " << nextTile << endl;
+
       if (nextTile == endPos) {
+        f.routeVertexAt(nextTile.first, nextTile.second, sourceVertex);
         return {nextTile, endPos};
       }
-
+        
       if (!elem(nextTile, alreadyChecked) && f.canRouteThrough(nextTile)) {
+
         f.routeVertexAt(nextTile.first, nextTile.second, sourceVertex);
 
         auto possibleRoute =
@@ -82,6 +85,12 @@ namespace WallPlacer {
                 cout << "Couldnt route to " << receiverId << endl;
                 routed = false;
                 break;
+              } else {
+                f.print(cout);                
+                cout << "-- Route from " << toPlace << " to " << receiverId << endl;
+                for (auto pos : route) {
+                  cout << "\t" << pos << endl;
+                }
               }
             }
           }
@@ -96,6 +105,12 @@ namespace WallPlacer {
                 cout << "Couldnt route to " << sourceId << endl;
                 routed = false;
                 break;
+              } else {
+                f.print(cout);
+                cout << "-- Route from " << sourceId << " to " << toPlace << endl;
+                for (auto pos : route) {
+                  cout << "\t" << pos << endl;
+                }
               }
             }
           }
